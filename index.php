@@ -14,6 +14,7 @@
     </head>
     <body>
         <h1>loja on line</h1>
+        <a href="pages/registro.php">registro</a>
 
 
         <script src="js/script.js"></script>
