@@ -8,18 +8,23 @@ if (isset($_POST['submit'])) {
     $pass = mysqli_real_escape_string($conn, md5($_POST['password']));
     $cpass = mysqli_real_escape_string($conn, md5($_POST['cpassword']));
 
-    $select = mysqli_query($conn, 
-    "SELECT * FROM `user_info` WHERE email = '$email' AND password = '$pass'") 
-    or die('query failed ungry');
+    $select = mysqli_query(
+        $conn,
+        "SELECT * FROM `user_info` WHERE email = '$email' AND password = '$pass'"
+    )
+        or die('query failed ungry');
 
     if (mysqli_num_rows($select) > 0) {
         $message[] = 'usuário já cadastrado';
-    }else{
-        mysqli_query($conn, 
-        "INSERT INTO `user_info`(name, email, password) 
-        VALUES ('$name','$email','$pass')")
-        or die('query failed');
+    } else {
+        mysqli_query(
+            $conn,
+            "INSERT INTO `user_info`(name, email, password) 
+        VALUES ('$name','$email','$pass')"
+        )
+            or die('query failed');
         $message[] = 'usuário cadastrado com sucesso"';
+        header('location:login.php');
     }
 }
 
@@ -39,13 +44,13 @@ if (isset($_POST['submit'])) {
 
 <body>
 
-<?php
-    if(isset($message)){
-        foreach($message as $message){
-            echo 'div class="message" onclick="this.remove();">'.$message.'</div>';
+    <?php
+    if (isset($message)) {
+        foreach ($message as $message) {
+            echo '<div class="message" onclick="this.remove();">'.$message.'</div>';
         }
     }
-?>
+    ?>
     <div class="form-container">
         <form action="" method="post">
             <h3>Registre Agora</h3>
