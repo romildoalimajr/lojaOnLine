@@ -37,10 +37,28 @@ if (isset($_POST['add_to_cart'])) {
     }
 };
 
+if (isset($_POST['update_cart'])) {
+    $update_quantity = $_POST['cart_quantity'];
+    $update_id = $_POST['cart_id'];
+    mysqli_query($conn, "UPDATE `cart` SET quantity = '$update_quantity' WHERE id = '$update_id'") or die('query failed no update');
+    $message[] = 'quantidade atualizada com sucesso!';
+};
+
+if (isset($_POST['remove'])) {
+    $remove_id = $_GET['remove'];
+    mysqli_query($conn, "DELETE FROM `cart` WHERE id = '$remove_id'") or die('query failed ao remover');
+    header('location: index.php');
+};
+
+if (isset($_POST['delete_all'])) {
+    mysqli_query($conn, "DELETE FROM `cart` WHERE user_id = '$user_id'") or die('query failed ao deletar tudo');
+    header('location: index.php');
+};
+
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8" />
@@ -56,7 +74,7 @@ if (isset($_POST['add_to_cart'])) {
     <?php
     if (isset($message)) {
         foreach ($message as $message) {
-            echo '<div class="message" onclick="this.remove();">'.$message.'</div>';
+            echo '<div class="message" onclick="this.remove();">' . $message . '</div>';
         }
     }
     ?>
@@ -91,7 +109,7 @@ if (isset($_POST['add_to_cart'])) {
                         <form action="" method="post" class="box">
                             <img src="img/<?php echo $fetch_product['image']; ?>" alt="">
                             <div class="name"><?php echo $fetch_product['name']; ?></div>
-                            <div class="price">R$<?php echo $fetch_product['price']; ?>/-</div>
+                            <div class="price">R$<?php echo $fetch_product['price']; ?></div>
                             <input type="number" name="product_quantity" min="1" id="" value="1">
                             <input type="hidden" name="product_image" value="<?php echo $fetch_product['image']; ?>">
                             <input type="hidden" name="product_name" value="<?php echo $fetch_product['name']; ?>">
@@ -116,7 +134,52 @@ if (isset($_POST['add_to_cart'])) {
                     <th>valor total</th>
                     <th>ação</th>
                 </thead>
+                <tbody>
+                    <?php
+                    $grand_total = 0;
+                    $cart_query = mysqli_query($conn, "SELECT * FROM  `cart`
+                WHERE user_id = '$user_id'") or die('query failed');
+                    if (mysqli_num_rows($cart_query) > 0) {
+                        while ($fetch_cart = mysqli_fetch_assoc($cart_query)) {
+                    ?>
+                            <tr>
+                                <td>
+                                    <img src="img/<?php echo $fetch_cart['image']; ?>" height="100" alt="">
+                                </td>
+                                <td><?php echo $fetch_cart['name']; ?></td>
+                                <td><?php echo $fetch_cart['price']; ?></td>
+                                <td>
+                                    <form action="" method="post">
+                                        <input type="hidden" name="cart_id" value="<?php echo $fetch_cart['quantity']; ?>">
+                                        <input type="number" value="<?php echo $fetch_cart['quantity']; ?>" min="1" name="cart_quantity" id="">
+                                        <input type="submit" value="adicionar" name="update_cart" class="option-btn">
+                                    </form>
+                                </td>
+                                <td>R$ <?php echo $sub_total = number_format((int)$fetch_cart['price'] * (int)$fetch_cart['quantity']); ?></td>
+                                <td>
+                                    <a href="index.php?remove=<?php echo $fetch_cart['id']; ?>" class="delete-btn" onclick="return confirm('remover ítem do carrinho?')">remover</a>
+                                </td>
+                            </tr>
+
+                    <?php
+                            (float)$grand_total += (float)$sub_total;
+                        };
+                    } else {
+                        echo '<tr><td style="padding:20px; text-transform=capitalize;" colspan="6">sem item adicionado</td></tr>';
+                    };
+                    ?>
+                    <tr class="table-bottom">
+                        <td colspan="4">total geral : </td>
+                        <td>R$ <?php echo $grand_total; ?></td>
+                        <td>
+                            <a href="index.php?delete_all" onclick="return confirm('limpar o carrinho?')" class="delete-btn <?php echo ($grand_total > 1) ? '' : 'disabled'; ?>">apagar tudo</a>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
+            <div class="cart-btn">
+                <a href="#" class="btn <?php echo ($grand_total > 1) ? '' : 'disabled'; ?> ">finalizar compra</a>
+            </div>
         </div>
 
     </div>

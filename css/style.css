@@ -198,5 +198,69 @@ body{
     color: var(--black);
     padding: 12px 14px;
 }
+.container .shopping-cart{
+    padding: 20px 0;
+}
+.container .shopping-cart table{
+    width: 100%;
+    text-align: center;
+    border: var(--border);
+    border-radius: 5px;
+    box-shadow: var(--box-shadow);
+    background-color: var(--white);
+}
+.container .shopping-cart table thead{
+    background-color: var(--black);
+}
+.container .shopping-cart table thead th{
+    padding: 10px;
+    color: var(--white);
+    text-transform: uppercase;
+    font-size: 20px;
+}
+.container .shopping-cart table .table-bottom{
+    background-color: var(--light-bg);
+}
+.container .shopping-cart table tr td{
+    padding: 10px;
+    font-size: 20px;
+    color: var(--black);
+}
+.container .shopping-cart table tr td:nth-child(1){
+    padding: 0;
+}
+.container .shopping-cart table tr td input[type="number"]{
+    width: 70px;
+    border: var(--border);
+    padding: 12px 14px;
+    font-size: 20px;
+    color: var(--black);
+}
+.container .shopping-cart .cart-btn{
+    margin-top: 10px;
+    text-align: center;
+}
+.container .shopping-cart .cart-btn .disabled{
+    pointer-events: none;
+    background-color: var(--red);
+    opacity: .5;
+    user-select: none;
+}
+@media(max-width:1200px){
+    .container{
+        overflow-x: scroll;
+    }
+    .container .shopping-cart table{
+        width: 1000px;
+    }
+}
 
+@media(max-width:450px){
+    .container .heading{
+        font-size: 30px;
+    }
+    .container .products .box-container .box img{
+        height: 200px;
+    }
+}
 
